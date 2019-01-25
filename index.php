@@ -1,12 +1,19 @@
 <?php
 
+$pass = 'password';
+
 function printJson($json) {
     header('Content-Type: application/json');
     echo json_encode($json);
     return;
 }
 
-if(!isset($_GET['reqUrl'])) {
+function isJson($string) {
+     json_decode($string);
+     return (json_last_error() == JSON_ERROR_NONE);
+}
+
+if(!isset($_GET['reqUrl']) || !isset($_GET['pass']) || $_GET['pass']!=$pass) {
     $json = ['message' => 'Error with the request'];
     return printJson($json);
 }
@@ -46,6 +53,8 @@ if (curl_errno($ch)) {
     $json = ['message' => 'Error with the request', 'error' => curl_errno($ch)];
     return printJson($json);
 }
-header('Content-Type: application/json');
+if(isJson($json)) {
+    header('Content-Type: application/json');    
+}
 echo $json;
 ?>
